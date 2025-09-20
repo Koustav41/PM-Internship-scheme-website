@@ -1,0 +1,2112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PM Internship Scheme - AI Recommendation Engine</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f3f0ff, #e9d5ff, #e0e7ff);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Parallax Background Elements */
+        .parallax-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .floating-element {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.6;
+            transition: transform 0.1s ease-out;
+        }
+
+        .element-large {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(168, 85, 247, 0.3));
+            filter: blur(20px);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .element-medium {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.4), rgba(139, 92, 246, 0.4));
+            filter: blur(15px);
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .element-small {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.2));
+            filter: blur(10px);
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: rgba(139, 92, 246, 0.5);
+            border-radius: 50%;
+            animation: particle-float 4s ease-in-out infinite;
+        }
+
+        .geometric-shape {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            animation: rotate 8s linear infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes particle-float {
+            0%, 100% { transform: translateY(0px) opacity(0.5); }
+            50% { transform: translateY(-15px) opacity(1); }
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(45deg); }
+            100% { transform: rotate(405deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Main Content */
+        .main-container {
+            position: relative;
+            z-index: 10;
+            padding: 24px 16px;
+            transition: transform 0.1s ease-out;
+        }
+
+        .content-wrapper {
+            max-width: 512px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+            transition: transform 0.2s ease-out;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .logo {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            padding: 12px;
+            border-radius: 50%;
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);
+            position: relative;
+            transition: transform 0.2s ease-out;
+        }
+
+        .logo::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            border-radius: 50%;
+            filter: blur(20px);
+            opacity: 0.3;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            color: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        .brand-text {
+            margin-left: 12px;
+            transition: transform 0.2s ease-out;
+        }
+
+        .brand-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #374151;
+            margin: 0;
+        }
+
+        .brand-subtitle {
+            font-size: 12px;
+            color: #8b5cf6;
+            font-weight: 600;
+        }
+
+        /* Language Toggle */
+        .language-toggle {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 24px;
+            transition: transform 0.15s ease-out;
+        }
+
+        .language-buttons {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 4px;
+            display: flex;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+
+        .language-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: transparent;
+            color: #6b7280;
+        }
+
+        .language-btn.active {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+
+        /* Main Title */
+        .main-title {
+            font-size: 28px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+            transition: transform 0.1s ease-out;
+        }
+
+        .main-subtitle {
+            color: #6b7280;
+            margin-bottom: 32px;
+            transition: transform 0.1s ease-out;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 32px;
+            transition: transform 0.1s ease-out;
+        }
+
+        .progress-steps {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .progress-step {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            background: #e5e7eb;
+            color: #9ca3af;
+        }
+
+        .progress-step.active {
+            background: #ddd6fe;
+            color: #7c3aed;
+            border: 2px solid #8b5cf6;
+        }
+
+        .progress-step.completed {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+        }
+
+        .progress-step.completed::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            border-radius: 50%;
+            filter: blur(15px);
+            opacity: 0.2;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .progress-line {
+            width: 48px;
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .progress-line.completed {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+        }
+
+        /* Main Content Card */
+        .content-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.2s ease-out;
+        }
+
+        .content-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(168, 85, 247, 0.1));
+            filter: blur(20px);
+            opacity: 0.5;
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Step Content */
+        .step-container {
+            display: none;
+        }
+
+        .step-container.active {
+            display: block;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .step-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .step-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+
+        .step-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .step-subtitle {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 12px;
+        }
+
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .option-card {
+            padding: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .option-card:hover {
+            border-color: #c4b5fd;
+            background: #faf5ff;
+            transform: translateY(-2px);
+        }
+
+        .option-card.selected {
+            border-color: #8b5cf6;
+            background: #f3f0ff;
+            color: #7c3aed;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+            transform: scale(1.02);
+        }
+
+        .option-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .option-text {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .text-input, .textarea-input, .select-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .text-input:focus, .textarea-input:focus, .select-input:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        }
+
+        .textarea-input {
+            resize: none;
+            min-height: 80px;
+        }
+
+        /* Navigation Buttons */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 32px;
+            transition: transform 0.2s ease-out;
+        }
+
+        .nav-btn {
+            padding: 12px 32px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .btn-back {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-back:hover:not(:disabled) {
+            background: #4b5563;
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            color: white;
+        }
+
+        .btn-next::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            border-radius: 12px;
+            filter: blur(15px);
+            opacity: 0.3;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        .btn-next:hover:not(:disabled) {
+            background: linear-gradient(135deg, #7c3aed, #9333ea);
+        }
+
+        /* Loading Animation */
+        .loading-container {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .loading-spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #8b5cf6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        .loading-text {
+            color: #6b7280;
+            font-size: 16px;
+        }
+
+        /* Recommendations */
+        .recommendations-container {
+            text-align: center;
+        }
+
+        .recommendations-header {
+            margin-bottom: 24px;
+        }
+
+        .recommendations-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .recommendations-subtitle {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .filter-toggle {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            background: rgba(139, 92, 246, 0.1);
+            color: #7c3aed;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .filter-toggle:hover {
+            background: rgba(139, 92, 246, 0.2);
+        }
+
+        .internship-card {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            text-align: left;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .internship-card:hover {
+            border-color: #c4b5fd;
+            box-shadow: 0 8px 30px rgba(139, 92, 246, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .internship-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .internship-info {
+            flex: 1;
+        }
+
+        .internship-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+
+        .internship-company {
+            color: #6b7280;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .internship-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 12px;
+            color: #9ca3af;
+            align-items: center;
+        }
+
+        .internship-salary {
+            text-align: right;
+        }
+
+        .salary-amount {
+            font-size: 20px;
+            font-weight: bold;
+            color: #059669;
+            margin-bottom: 4px;
+        }
+
+        .internship-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .internship-badges {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 16px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .badge-featured {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            color: white;
+        }
+
+        .badge-trending {
+            background: #10b981;
+            color: white;
+        }
+
+        .badge-urgent {
+            background: #ef4444;
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        .match-score {
+            background: rgba(139, 92, 246, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .match-score-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .match-score-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #7c3aed;
+        }
+
+        .match-badges {
+            display: flex;
+            gap: 8px;
+        }
+
+        .match-badge {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .match-badge-skills {
+            background: rgba(34, 197, 94, 0.1);
+            color: #059669;
+        }
+
+        .match-badge-interests {
+            background: rgba(139, 92, 246, 0.1);
+            color: #7c3aed;
+        }
+
+        .internship-description {
+            color: #6b7280;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .internship-benefits, .internship-requirements {
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .benefits-list {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .benefit-tag {
+            background: rgba(34, 197, 94, 0.1);
+            color: #059669;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .requirements-text {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .internship-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid #f3f4f6;
+        }
+
+        .action-links {
+            display: flex;
+            gap: 16px;
+        }
+
+        .action-link {
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .action-link:hover {
+            color: #8b5cf6;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-secondary {
+            padding: 8px 16px;
+            border: 1px solid #d1d5db;
+            background: white;
+            color: #374151;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #f9fafb;
+            border-color: #8b5cf6;
+        }
+
+        .btn-primary {
+            padding: 8px 20px;
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #7c3aed, #9333ea);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+
+        .restart-btn {
+            width: 100%;
+            padding: 12px;
+            background: #6b7280;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .restart-btn:hover {
+            background: #4b5563;
+            transform: translateY(-1px);
+        }
+
+        /* Stats */
+        .stats-container {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(168, 85, 247, 0.1));
+            padding: 16px;
+            border-radius: 12px;
+            margin-top: 24px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            text-align: center;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #7c3aed;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            color: #6b7280;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 24px;
+            transition: transform 0.2s ease-out;
+        }
+
+        .footer-text {
+            font-size: 12px;
+            color: #9ca3af;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 640px) {
+            .content-wrapper {
+                margin: 0 8px;
+            }
+            
+            .option-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-title {
+                font-size: 24px;
+            }
+            
+            .navigation {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .internship-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            
+            .internship-actions {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Hidden class */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="parallax-container" id="parallaxContainer"></div>
+
+    <div class="main-container" id="mainContainer">
+        <div class="content-wrapper">
+            <!-- Header -->
+            <div class="header" id="header">
+                <div class="logo-container">
+                    <div class="logo" id="logo">
+                        <div class="logo-icon">🏢</div>
+                    </div>
+                    <div class="brand-text" id="brandText">
+                        <h1 class="brand-title">PM Internship Scheme</h1>
+                        <p class="brand-subtitle">Pro AI Recommender</p>
+                    </div>
+                </div>
+
+                <!-- Language Toggle -->
+                <div class="language-toggle" id="languageToggle">
+                    <div class="language-buttons">
+                        <button class="language-btn active" onclick="changeLanguage('en')" id="btnEn">English</button>
+                        <button class="language-btn" onclick="changeLanguage('hi')" id="btnHi">हिंदी</button>
+                    </div>
+                </div>
+
+                <!-- Main Title and Progress (shown only in steps 1-4) -->
+                <div id="titleSection">
+                    <h2 class="main-title" id="mainTitle">Find Your Dream Internship</h2>
+                    <p class="main-subtitle" id="mainSubtitle">AI-powered recommendations tailored for your success</p>
+                    
+                    <!-- Progress Bar -->
+                    <div class="progress-container" id="progressContainer">
+                        <div class="progress-steps">
+                            <div class="progress-step active" id="step1">1</div>
+                            <div class="progress-line" id="line1"></div>
+                            <div class="progress-step" id="step2">2</div>
+                            <div class="progress-line" id="line2"></div>
+                            <div class="progress-step" id="step3">3</div>
+                            <div class="progress-line" id="line3"></div>
+                            <div class="progress-step" id="step4">4</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Card -->
+            <div class="content-card" id="contentCard">
+                <div class="card-content">
+                    <!-- Step 1: Education & Experience -->
+                    <div class="step-container active" id="stepContainer1">
+                        <div class="step-header">
+                            <div class="step-icon" style="background: rgba(139, 92, 246, 0.1);">🎓</div>
+                            <h3 class="step-title" id="step1Title">Education & Experience</h3>
+                            <p class="step-subtitle" id="step1Subtitle">Tell us about your education and experience</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" id="educationLabel">Education Level</label>
+                            <div class="option-grid">
+                                <div class="option-card" onclick="selectOption('education', 'high-school', this)">
+                                    <div class="option-icon">🎓</div>
+                                    <div class="option-text" id="opt10th">10th/12th Pass</div>
+                                </div>
+                                <div class="option-card" onclick="selectOption('education', 'diploma', this)">
+                                    <div class="option-icon">📜</div>
+                                    <div class="option-text" id="optDiploma">Diploma</div>
+                                </div>
+                                <div class="option-card" onclick="selectOption('education', 'graduate', this)">
+                                    <div class="option-icon">🎯</div>
+                                    <div class="option-text" id="optGraduate">Graduate</div>
+                                </div>
+                                <div class="option-card" onclick="selectOption('education', 'postgraduate', this)">
+                                    <div class="option-icon">🏆</div>
+                                    <div class="option-text" id="optPostgrad">Post Graduate</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" id="experienceLabel">Previous Experience</label>
+                            <div class="option-grid">
+                                <div class="option-card" onclick="selectOption('experience', 'none', this)">
+                                    <div class="option-text" id="optNoExp">No Experience</div>
+                                </div>
+                                <div class="option-card" onclick="selectOption('experience', 'internship', this)">
+                                    <div class="option-text" id="optPrevIntern">Previous Internship</div>
+                                </div>
+                                <div class="option-card" onclick="selectOption('experience', 'freelance', this)">
+                                    <div class="option-text" id="optFreelance">Freelance Work</div>
+                                </div>
+                                <div class="option-card" onclick="selectOption('experience', 'project', this)">
+                                    <div class="option-text" id="optProject">Project Work</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Skills & Expertise -->
+                    <div class="step-container" id="stepContainer2">
+                        <div class="step-header">
+                            <div class="step-icon" style="background: rgba(34, 197, 94, 0.1);">🎯</div>
+                            <h3 class="step-title" id="step2Title">Skills & Expertise</h3>
+                            <p class="step-subtitle" id="step2Subtitle">Select your skills and expertise areas</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" id="techSkillsLabel">Technical Skills</label>
+                            <div class="option-grid">
+                                <div class="option-card" onclick="toggleSkill('Python', this)">Python</div>
+                                <div class="option-card" onclick="toggleSkill('JavaScript', this)">JavaScript</div>
+                                <div class="option-card" onclick="toggleSkill('Data Analysis', this)">Data Analysis</div>
+                                <div class="option-card" onclick="toggleSkill('Excel', this)">Excel</div>
+                                <div class="option-card" onclick="toggleSkill('Design', this)">Design</div>
+                                <div class="option-card" onclick="toggleSkill('Marketing', this)">Marketing</div>
+                                <div class="option-card" onclick="toggleSkill('Content Writing', this)">Content Writing</div>
+                                <div class="option-card" onclick="toggleSkill('Research', this)">Research</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" id="softSkillsLabel">Soft Skills</label>
+                            <div class="option-grid">
+                                <div class="option-card" onclick="toggleSkill('Communication', this)">Communication</div>
+                                <div class="option-card" onclick="toggleSkill('Leadership', this)">Leadership</div>
+                                <div class="option-card" onclick="toggleSkill('Teamwork', this)">Teamwork</div>
+                                <div class="option-card" onclick="toggleSkill('Problem Solving', this)">Problem Solving</div>
+                                <div class="option-card" onclick="toggleSkill('Time Management', this)">Time Management</div>
+                                <div class="option-card" onclick="toggleSkill('Creativity', this)">Creativity</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <textarea class="textarea-input" id="additionalSkills" placeholder="Describe other skills..." oninput="updateFormData('additionalSkills', this.value)"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Interests & Goals -->
+                    <div class="step-container" id="stepContainer3">
+                        <div class="step-header">
+                            <div class="step-icon" style="background: rgba(168, 85, 247, 0.1);">⭐</div>
+                            <h3 class="step-title" id="step3Title">Interests & Goals</h3>
+                            <p class="step-subtitle" id="step3Subtitle">Which industries and roles interest you most?</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" id="sectorsLabel">Industry Sectors</label>
+                            <div class="option-grid">
+                                <div class="option-card" onclick="toggleInterest('Technology', this)">
+                                    <div class="option-icon">💻</div>
+                                    <div class="option-text">Technology</div>
+                                </div>
+                                <div class="option-card" onclick="toggleInterest('Healthcare', this)">
+                                    <div class="option-icon">🏥</div>
+                                    <div class="option-text">Healthcare</div>
+                                </div>
+                                <div class="option-card" onclick="toggleInterest('Finance', this)">
+                                    <div class="option-icon">💰</div>
+                                    <div class="option-text">Finance</div>
+                                </div>
+                                <div class="option-card" onclick="toggleInterest('Education', this)">
+                                    <div class="option-icon">📚</div>
+                                    <div class="option-text">Education</div>
+                                </div>
+                                <div class="option-card" onclick="toggleInterest('Marketing', this)">
+                                    <div class="option-icon">📱</div>
+                                    <div class="option-text">Marketing</div>
+                                </div>
+                                <div class="option-card" onclick="toggleInterest('Media', this)">
+                                    <div class="option-icon">🎬</div>
+                                    <div class="option-text">Media</div>
+                                </div>
+                                <div class="option-card" onclick="toggleInterest('Research', this)">
+                                    <div class="option-icon">🔬</div>
+                                    <div class="option-text">Research</div>
+                                </div>
+                                <div class="option-card" onclick="toggleInterest('Government', this)">
+                                    <div class="option-icon">🏛️</div>
+                                    <div class="option-text">Government</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" id="roleTypeLabel">Role Preferences</label>
+                            <div class="option-grid">
+                                <div class="option-card" onclick="selectOption('rolePreference', 'technical', this)">
+                                    <div class="option-text" id="optTechnical">Technical Role</div>
+                                </div>
+                                <div class="option-card" onclick="selectOption('rolePreference', 'creative', this)">
+                                    <div class="option-text" id="optCreative">Creative Role</div>
+                                </div>
+                                <div class="option-card" onclick="selectOption('rolePreference', 'analytical', this)">
+                                    <div class="option-text" id="optAnalytical">Analytical Role</div>
+                                </div>
+                                <div class="option-card" onclick="selectOption('rolePreference', 'management', this)">
+                                    <div class="option-text" id="optManagement">Management Role</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Preferences & Availability -->
+                    <div class="step-container" id="stepContainer4">
+                        <div class="step-header">
+                            <div class="step-icon" style="background: rgba(239, 68, 68, 0.1);">📍</div>
+                            <h3 class="step-title" id="step4Title">Preferences & Availability</h3>
+                            <p class="step-subtitle" id="step4Subtitle">Set your preferences and availability</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" id="locationLabel">Preferred Location</label>
+                            <div class="option-grid">
+                                <div class="option-card" onclick="selectOption('location', 'Mumbai', this)">Mumbai</div>
+                                <div class="option-card" onclick="selectOption('location', 'Delhi', this)">Delhi</div>
+                                <div class="option-card" onclick="selectOption('location', 'Bangalore', this)">Bangalore</div>
+                                <div class="option-card" onclick="selectOption('location', 'Chennai', this)">Chennai</div>
+                                <div class="option-card" onclick="selectOption('location', 'Pune', this)">Pune</div>
+                                <div class="option-card" onclick="selectOption('location', 'Hyderabad', this)">Hyderabad</div>
+                                <div class="option-card" onclick="selectOption('location', 'Kolkata', this)">Kolkata</div>
+                                <div class="option-card" onclick="selectOption('location', 'Remote', this)">Remote</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" id="workModeLabel">Work Mode</label>
+                            <div class="option-grid" style="grid-template-columns: repeat(3, 1fr);">
+                                <div class="option-card" onclick="selectOption('workMode', 'on-site', this)">
+                                    <div class="option-icon">🏢</div>
+                                    <div class="option-text" id="optOnSite">On-site</div>
+                                </div>
+                                <div class="option-card" onclick="selectOption('workMode', 'remote', this)">
+                                    <div class="option-icon">🏠</div>
+                                    <div class="option-text" id="optRemote">Remote</div>
+                                </div>
+                                <div class="option-card" onclick="selectOption('workMode', 'hybrid', this)">
+                                    <div class="option-icon">🔄</div>
+                                    <div class="option-text" id="optHybrid">Hybrid</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" id="durationLabel">Duration Preference</label>
+                            <div class="option-grid">
+                                <div class="option-card" onclick="selectOption('duration', '3-months', this)">
+                                    <div class="option-text" id="opt3Months">3 Months</div>
+                                </div>
+                                <div class="option-card" onclick="selectOption('duration', '4-months', this)">
+                                    <div class="option-text" id="opt4Months">4 Months</div>
+                                </div>
+                                <div class="option-card" onclick="selectOption('duration', '5-months', this)">
+                                    <div class="option-text" id="opt5Months">5 Months</div>
+                                </div>
+                                <div class="option-card" onclick="selectOption('duration', '6-months', this)">
+                                    <div class="option-text" id="opt6Months">6+ Months</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" id="stipendLabel">Expected Stipend Range</label>
+                            <select class="select-input" id="stipendRange" onchange="updateFormData('stipendRange', this.value)">
+                                <option value="" id="optSelectStipend">Select stipend range</option>
+                                <option value="10000-15000">₹10,000 - ₹15,000</option>
+                                <option value="15000-20000">₹15,000 - ₹20,000</option>
+                                <option value="20000-25000">₹20,000 - ₹25,000</option>
+                                <option value="25000+">₹25,000+</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Step 5: Recommendations -->
+                    <div class="step-container" id="stepContainer5">
+                        <div class="recommendations-container">
+                            <div class="recommendations-header">
+                                <div class="step-icon" style="background: rgba(139, 92, 246, 0.1); margin: 0 auto 16px;">📈</div>
+                                <h3 class="recommendations-title" id="recommendationsTitle">Your Personalized Matches</h3>
+                                <p class="recommendations-subtitle" id="recommendationsSubtitle">AI-curated opportunities matching your profile perfectly</p>
+                                
+                                <div class="filter-toggle" onclick="toggleFilters()">
+                                    <span>⚙️ Filters</span>
+                                </div>
+                            </div>
+
+                            <!-- Loading State -->
+                            <div class="loading-container" id="loadingContainer">
+                                <div class="loading-spinner"></div>
+                                <p class="loading-text" id="loadingText">AI is finding the perfect internships for you...</p>
+                            </div>
+
+                            <!-- Recommendations List -->
+                            <div id="recommendationsList"></div>
+
+                            <!-- Stats -->
+                            <div class="stats-container" id="statsContainer" style="display: none;">
+                                <div class="stats-grid">
+                                    <div class="stat-item">
+                                        <div class="stat-number" id="matchesFound">0</div>
+                                        <div class="stat-label" id="matchesLabel">Matches Found</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-number" id="avgRating">0.0</div>
+                                        <div class="stat-label" id="ratingLabel">Avg Rating</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-number" id="premiumCount">0</div>
+                                        <div class="stat-label" id="premiumLabel">Premium</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="restart-btn" onclick="restartProcess()" id="restartBtn">Start New Search</button>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Buttons -->
+                    <div class="navigation" id="navigation">
+                        <button class="nav-btn btn-back" onclick="previousStep()" id="backBtn">
+                            <span>←</span>
+                            <span id="backText">Previous</span>
+                        </button>
+                        <button class="nav-btn btn-next" onclick="nextStep()" id="nextBtn">
+                            <span id="nextText">Continue</span>
+                            <span>→</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer" id="footer">
+                <p class="footer-text" id="footerText">Powered by AI Technology • Government of India</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Application State
+        const appState = {
+            currentStep: 1,
+            currentLanguage: 'en',
+            formData: {
+                education: '',
+                experience: '',
+                skills: [],
+                interests: [],
+                rolePreference: '',
+                location: '',
+                workMode: '',
+                duration: '',
+                stipendRange: '',
+                additionalSkills: ''
+            },
+            recommendations: [],
+            favorites: []
+        };
+
+        // Sample internship data
+        const internshipsData = [
+            {
+                id: 1,
+                title: "AI/ML Research Assistant",
+                company: "Tech Innovations Lab",
+                companyLogo: "🚀",
+                location: "Mumbai",
+                workMode: "Hybrid",
+                duration: "6 months",
+                skills: ["python", "machine learning", "data analysis", "research"],
+                sectors: ["technology", "research", "artificial intelligence"],
+                stipend: "₹25,000/month",
+                description: "Work on cutting-edge AI projects and contribute to machine learning research initiatives",
+                rating: 4.8,
+                applicants: 89,
+                urgency: "High",
+                benefits: ["Certification", "Mentorship", "Project Portfolio"],
+                requirements: "Graduate in CS/IT with basic Python knowledge",
+                featured: true,
+                trending: true
+            },
+            {
+                id: 2,
+                title: "Digital Marketing Specialist",
+                company: "Brand Solutions Pvt Ltd",
+                companyLogo: "📱",
+                location: "Delhi",
+                workMode: "Remote",
+                duration: "4 months",
+                skills: ["marketing", "social media", "content creation", "analytics"],
+                sectors: ["marketing", "digital media", "advertising"],
+                stipend: "₹20,000/month",
+                description: "Create engaging digital campaigns and manage social media presence for top brands",
+                rating: 4.6,
+                applicants: 156,
+                urgency: "Medium",
+                benefits: ["Industry Exposure", "Creative Freedom", "Performance Bonus"],
+                requirements: "Any graduate with creative mindset and basic marketing knowledge",
+                featured: true,
+                trending: false
+            },
+            {
+                id: 3,
+                title: "Healthcare Data Analyst",
+                company: "MedTech Solutions",
+                companyLogo: "🏥",
+                location: "Bangalore",
+                workMode: "On-site",
+                duration: "5 months",
+                skills: ["data analysis", "healthcare", "excel", "statistics"],
+                sectors: ["healthcare", "data science", "medical technology"],
+                stipend: "₹22,000/month",
+                description: "Analyze healthcare data to improve patient outcomes and operational efficiency",
+                rating: 4.7,
+                applicants: 67,
+                urgency: "High",
+                benefits: ["Healthcare Insurance", "Skill Development", "Industry Recognition"],
+                requirements: "Graduate in any field with strong analytical skills",
+                featured: false,
+                trending: true
+            },
+            {
+                id: 4,
+                title: "Content Strategy Intern",
+                company: "Creative Media House",
+                companyLogo: "🎨",
+                location: "Chennai",
+                workMode: "Hybrid",
+                duration: "3 months",
+                skills: ["writing", "creativity", "research", "strategy"],
+                sectors: ["media", "content", "publishing"],
+                stipend: "₹18,000/month",
+                description: "Develop content strategies for digital platforms and create engaging multimedia content",
+                rating: 4.4,
+                applicants: 123,
+                urgency: "Low",
+                benefits: ["Creative Portfolio", "Industry Mentorship", "Publication Credits"],
+                requirements: "Graduate with excellent communication and creative skills",
+                featured: false,
+                trending: false
+            },
+            {
+                id: 5,
+                title: "Financial Analysis Trainee",
+                company: "Investment Advisory Firm",
+                companyLogo: "💰",
+                location: "Pune",
+                workMode: "On-site",
+                duration: "6 months",
+                skills: ["finance", "analysis", "excel", "research"],
+                sectors: ["finance", "investment", "banking"],
+                stipend: "₹24,000/month",
+                description: "Support investment research and financial analysis for client portfolios",
+                rating: 4.9,
+                applicants: 45,
+                urgency: "High",
+                benefits: ["Finance Certification", "Market Exposure", "Career Guidance"],
+                requirements: "Graduate in Finance/Economics/Commerce with strong analytical skills",
+                featured: true,
+                trending: true
+            }
+        ];
+
+        // Translations
+        const translations = {
+            en: {
+                mainTitle: "Find Your Dream Internship",
+                mainSubtitle: "AI-powered recommendations tailored for your success",
+                step1Title: "Education & Experience",
+                step1Subtitle: "Tell us about your education and experience",
+                step2Title: "Skills & Expertise", 
+                step2Subtitle: "Select your skills and expertise areas",
+                step3Title: "Interests & Goals",
+                step3Subtitle: "Which industries and roles interest you most?",
+                step4Title: "Preferences & Availability",
+                step4Subtitle: "Set your preferences and availability",
+                recommendationsTitle: "Your Personalized Matches",
+                recommendationsSubtitle: "AI-curated opportunities matching your profile perfectly",
+                backText: "Previous",
+                nextText: "Continue",
+                getRecommendations: "Get AI Recommendations",
+                restartBtn: "Start New Search",
+                loadingText: "AI is finding the perfect internships for you...",
+                footerText: "Powered by AI Technology • Government of India",
+                educationLabel: "Education Level",
+                experienceLabel: "Previous Experience",
+                techSkillsLabel: "Technical Skills",
+                softSkillsLabel: "Soft Skills",
+                sectorsLabel: "Industry Sectors",
+                roleTypeLabel: "Role Preferences",
+                locationLabel: "Preferred Location",
+                workModeLabel: "Work Mode",
+                durationLabel: "Duration Preference",
+                stipendLabel: "Expected Stipend Range"
+            },
+            hi: {
+                mainTitle: "अपनी सपनों की इंटर्नशिप खोजें",
+                mainSubtitle: "आपकी सफलता के लिए AI-संचालित सिफारिशें",
+                step1Title: "शिक्षा और अनुभव",
+                step1Subtitle: "अपनी शिक्षा और अनुभव की जानकारी दें",
+                step2Title: "कौशल और विशेषज्ञता",
+                step2Subtitle: "अपने कौशल और विशेषज्ञता चुनें",
+                step3Title: "रुचियां और लक्ष्य",
+                step3Subtitle: "आप किस क्षेत्र में काम करना चाहते हैं?",
+                step4Title: "प्राथमिकताएं और उपलब्धता",
+                step4Subtitle: "अपनी प्राथमिकताएं सेट करें",
+                recommendationsTitle: "आपके व्यक्तिगत मैच",
+                recommendationsSubtitle: "AI द्वारा आपके लिए चुनी गई सबसे उपयुक्त इंटर्नशिप",
+                backText: "पिछला",
+                nextText: "आगे बढ़ें",
+                getRecommendations: "AI सिफारिशें प्राप्त करें",
+                restartBtn: "नई खोज शुरू करें",
+                loadingText: "AI आपके लिए सबसे अच्छी इंटर्नशिप खोज रहा है...",
+                footerText: "AI-संचालित तकनीक द्वारा संचालित • भारत सरकार",
+                educationLabel: "शिक्षा स्तर",
+                experienceLabel: "पूर्व अनुभव",
+                techSkillsLabel: "तकनीकी कौशल",
+                softSkillsLabel: "सॉफ्ट स्किल्स",
+                sectorsLabel: "उद्योग क्षेत्र",
+                roleTypeLabel: "भूमिका प्राथमिकता",
+                locationLabel: "पसंदीदा स्थान",
+                workModeLabel: "काम का मोड",
+                durationLabel: "अवधि प्राथमिकता",
+                stipendLabel: "अपेक्षित वेतन रेंज"
+            }
+        };
+
+        // Parallax variables
+        let mouseX = 0, mouseY = 0, scrollY = 0;
+
+        // Initialize application
+        function initializeApp() {
+            createParallaxElements();
+            setupEventListeners();
+            updateUI();
+            updateNavigation();
+        }
+
+        // Create parallax background elements
+        function createParallaxElements() {
+            const container = document.getElementById('parallaxContainer');
+            
+            // Large floating elements
+            for (let i = 0; i < 4; i++) {
+                const element = document.createElement('div');
+                element.className = 'floating-element element-large';
+                element.style.top = Math.random() * 100 + '%';
+                element.style.left = Math.random() * 100 + '%';
+                element.style.animationDelay = Math.random() * 6 + 's';
+                container.appendChild(element);
+            }
+
+            // Medium floating elements
+            for (let i = 0; i < 6; i++) {
+                const element = document.createElement('div');
+                element.className = 'floating-element element-medium';
+                element.style.top = Math.random() * 100 + '%';
+                element.style.left = Math.random() * 100 + '%';
+                element.style.animationDelay = Math.random() * 8 + 's';
+                container.appendChild(element);
+            }
+
+            // Small floating elements
+            for (let i = 0; i < 8; i++) {
+                const element = document.createElement('div');
+                element.className = 'floating-element element-small';
+                element.style.top = Math.random() * 100 + '%';
+                element.style.left = Math.random() * 100 + '%';
+                element.style.animationDelay = Math.random() * 4 + 's';
+                container.appendChild(element);
+            }
+
+            // Particles
+            for (let i = 0; i < 10; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 4 + 's';
+                container.appendChild(particle);
+            }
+
+            // Geometric shapes
+            for (let i = 0; i < 3; i++) {
+                const shape = document.createElement('div');
+                shape.className = 'geometric-shape';
+                shape.style.top = Math.random() * 100 + '%';
+                shape.style.left = Math.random() * 100 + '%';
+                shape.style.animationDelay = Math.random() * 8 + 's';
+                container.appendChild(shape);
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Mouse movement for parallax
+            document.addEventListener('mousemove', (e) => {
+                mouseX = (e.clientX - window.innerWidth / 2) / window.innerWidth;
+                mouseY = (e.clientY - window.innerHeight / 2) / window.innerHeight;
+                updateParallaxElements();
+            });
+
+            // Scroll for parallax
+            window.addEventListener('scroll', () => {
+                scrollY = window.scrollY;
+                updateParallaxElements();
+            });
+        }
+
+        // Update parallax elements based on mouse and scroll
+        function updateParallaxElements() {
+            const elements = document.querySelectorAll('.floating-element');
+            const particles = document.querySelectorAll('.particle');
+            const shapes = document.querySelectorAll('.geometric-shape');
+
+            // Update floating elements
+            elements.forEach((element, index) => {
+                const speed = 0.02 + (index % 3) * 0.01;
+                const scrollSpeed = 0.1 + (index % 4) * 0.05;
+                element.style.transform = `
+                    translate(${mouseX * speed * 100}px, ${mouseY * speed * 100 + scrollY * scrollSpeed}px)
+                `;
+            });
+
+            // Update particles
+            particles.forEach((particle, index) => {
+                const speed = 0.03 + (index % 5) * 0.005;
+                const scrollSpeed = 0.08 + (index % 3) * 0.02;
+                particle.style.transform = `
+                    translate(${mouseX * speed * 80}px, ${mouseY * speed * 80 + scrollY * scrollSpeed}px)
+                `;
+            });
+
+            // Update geometric shapes
+            shapes.forEach((shape, index) => {
+                const speed = 0.025 + (index % 3) * 0.01;
+                const scrollSpeed = 0.15 + (index % 2) * 0.05;
+                const rotation = scrollY * 0.1 + index * 45;
+                shape.style.transform = `
+                    translate(${mouseX * speed * 60}px, ${mouseY * speed * 60 + scrollY * scrollSpeed}px) 
+                    rotate(${rotation}deg)
+                `;
+            });
+
+            // Update main container
+            const mainContainer = document.getElementById('mainContainer');
+            mainContainer.style.transform = `translateY(${scrollY * -0.02}px)`;
+
+            // Update header elements
+            const header = document.getElementById('header');
+            const logo = document.getElementById('logo');
+            const brandText = document.getElementById('brandText');
+            
+            if (header) {
+                header.style.transform = `translateY(${scrollY * 0.05}px)`;
+            }
+            
+            if (logo) {
+                logo.style.transform = `
+                    translateX(${mouseX * 10}px) 
+                    translateY(${mouseY * 8}px) 
+                    rotateY(${mouseX * 20}deg)
+                `;
+            }
+            
+            if (brandText) {
+                brandText.style.transform = `translateX(${mouseX * -5}px)`;
+            }
+        }
+
+        // Language switching
+        function changeLanguage(language) {
+            appState.currentLanguage = language;
+            
+            // Update button states
+            document.getElementById('btnEn').classList.toggle('active', language === 'en');
+            document.getElementById('btnHi').classList.toggle('active', language === 'hi');
+            
+            // Update text content
+            updateUI();
+        }
+
+        // Update UI based on current language
+        function updateUI() {
+            const t = translations[appState.currentLanguage];
+            
+            // Update main texts
+            const elements = [
+                { id: 'mainTitle', text: t.mainTitle },
+                { id: 'mainSubtitle', text: t.mainSubtitle },
+                { id: 'step1Title', text: t.step1Title },
+                { id: 'step1Subtitle', text: t.step1Subtitle },
+                { id: 'step2Title', text: t.step2Title },
+                { id: 'step2Subtitle', text: t.step2Subtitle },
+                { id: 'step3Title', text: t.step3Title },
+                { id: 'step3Subtitle', text: t.step3Subtitle },
+                { id: 'step4Title', text: t.step4Title },
+                { id: 'step4Subtitle', text: t.step4Subtitle },
+                { id: 'recommendationsTitle', text: t.recommendationsTitle },
+                { id: 'recommendationsSubtitle', text: t.recommendationsSubtitle },
+                { id: 'backText', text: t.backText },
+                { id: 'nextText', text: t.nextText },
+                { id: 'restartBtn', text: t.restartBtn },
+                { id: 'loadingText', text: t.loadingText },
+                { id: 'footerText', text: t.footerText },
+                { id: 'educationLabel', text: t.educationLabel },
+                { id: 'experienceLabel', text: t.experienceLabel },
+                { id: 'techSkillsLabel', text: t.techSkillsLabel },
+                { id: 'softSkillsLabel', text: t.softSkillsLabel },
+                { id: 'sectorsLabel', text: t.sectorsLabel },
+                { id: 'roleTypeLabel', text: t.roleTypeLabel },
+                { id: 'locationLabel', text: t.locationLabel },
+                { id: 'workModeLabel', text: t.workModeLabel },
+                { id: 'durationLabel', text: t.durationLabel },
+                { id: 'stipendLabel', text: t.stipendLabel }
+            ];
+
+            elements.forEach(({ id, text }) => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.textContent = text;
+                }
+            });
+
+            // Update step 4 button text
+            if (appState.currentStep === 4) {
+                const nextBtn = document.getElementById('nextText');
+                if (nextBtn) {
+                    nextBtn.textContent = t.getRecommendations;
+                }
+            }
+        }
+
+        // Form interaction functions
+        function selectOption(field, value, element) {
+            // Remove selection from siblings
+            const siblings = element.parentNode.querySelectorAll('.option-card');
+            siblings.forEach(sibling => sibling.classList.remove('selected'));
+            
+            // Add selection to current element
+            element.classList.add('selected');
+            
+            // Update form data
+            appState.formData[field] = value;
+            
+            // Update navigation
+            updateNavigation();
+        }
+
+        function toggleSkill(skill, element) {
+            const isSelected = element.classList.contains('selected');
+            
+            if (isSelected) {
+                element.classList.remove('selected');
+                appState.formData.skills = appState.formData.skills.filter(s => s !== skill);
+            } else {
+                element.classList.add('selected');
+                appState.formData.skills.push(skill);
+            }
+            
+            updateNavigation();
+        }
+
+        function toggleInterest(interest, element) {
+            const isSelected = element.classList.contains('selected');
+            
+            if (isSelected) {
+                element.classList.remove('selected');
+                appState.formData.interests = appState.formData.interests.filter(i => i !== interest);
+            } else {
+                element.classList.add('selected');
+                appState.formData.interests.push(interest);
+            }
+            
+            updateNavigation();
+        }
+
+        function updateFormData(field, value) {
+            appState.formData[field] = value;
+            updateNavigation();
+        }
+
+        // Navigation functions
+        function nextStep() {
+            if (appState.currentStep < 4) {
+                appState.currentStep++;
+                updateStepDisplay();
+                updateNavigation();
+            } else if (appState.currentStep === 4) {
+                generateRecommendations();
+            }
+        }
+
+        function previousStep() {
+            if (appState.currentStep > 1) {
+                appState.currentStep--;
+                updateStepDisplay();
+                updateNavigation();
+            }
+        }
+
+        function updateStepDisplay() {
+            // Hide all step containers
+            for (let i = 1; i <= 5; i++) {
+                const container = document.getElementById(`stepContainer${i}`);
+                if (container) {
+                    container.classList.remove('active');
+                }
+            }
+            
+            // Show current step container
+            const currentContainer = document.getElementById(`stepContainer${appState.currentStep}`);
+            if (currentContainer) {
+                currentContainer.classList.add('active');
+            }
+            
+            // Update progress bar
+            updateProgressBar();
+            
+            // Show/hide title section and navigation
+            const titleSection = document.getElementById('titleSection');
+            const navigation = document.getElementById('navigation');
+            
+            if (appState.currentStep === 5) {
+                titleSection.style.display = 'none';
+                navigation.style.display = 'none';
+            } else {
+                titleSection.style.display = 'block';
+                navigation.style.display = 'flex';
+            }
+        }
+
+        function updateProgressBar() {
+            for (let i = 1; i <= 4; i++) {
+                const step = document.getElementById(`step${i}`);
+                const line = document.getElementById(`line${i}`);
+                
+                if (step) {
+                    step.classList.remove('active', 'completed');
+                    if (i < appState.currentStep) {
+                        step.classList.add('completed');
+                        step.innerHTML = '✓';
+                    } else if (i === appState.currentStep) {
+                        step.classList.add('active');
+                        step.innerHTML = i;
+                    } else {
+                        step.innerHTML = i;
+                    }
+                }
+                
+                if (line && i < 4) {
+                    line.classList.toggle('completed', i < appState.currentStep);
+                }
+            }
+        }
+
+        function updateNavigation() {
+            const backBtn = document.getElementById('backBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const nextText = document.getElementById('nextText');
+            
+            // Update back button
+            if (backBtn) {
+                backBtn.disabled = appState.currentStep === 1;
+            }
+            
+            // Update next button
+            if (nextBtn && nextText) {
+                const t = translations[appState.currentLanguage];
+                
+                if (appState.currentStep === 4) {
+                    nextText.textContent = t.getRecommendations;
+                } else {
+                    nextText.textContent = t.nextText;
+                }
+                
+                // Check if step is complete
+                let isStepComplete = false;
+                
+                switch (appState.currentStep) {
+                    case 1:
+                        isStepComplete = appState.formData.education && appState.formData.experience;
+                        break;
+                    case 2:
+                        isStepComplete = appState.formData.skills.length > 0;
+                        break;
+                    case 3:
+                        isStepComplete = appState.formData.interests.length > 0;
+                        break;
+                    case 4:
+                        isStepComplete = appState.formData.location && appState.formData.workMode;
+                        break;
+                }
+                
+                nextBtn.disabled = !isStepComplete;
+            }
+        }
+
+        // Recommendation generation
+        function generateRecommendations() {
+            appState.currentStep = 5;
+            updateStepDisplay();
+            
+            // Show loading
+            const loadingContainer = document.getElementById('loadingContainer');
+            const recommendationsList = document.getElementById('recommendationsList');
+            const statsContainer = document.getElementById('statsContainer');
+            
+            if (loadingContainer) loadingContainer.style.display = 'block';
+            if (recommendationsList) recommendationsList.style.display = 'none';
+            if (statsContainer) statsContainer.style.display = 'none';
+            
+            // Simulate AI processing
+            setTimeout(() => {
+                const recommendations = calculateRecommendations();
+                displayRecommendations(recommendations);
+                displayStats(recommendations);
+                
+                if (loadingContainer) loadingContainer.style.display = 'none';
+                if (recommendationsList) recommendationsList.style.display = 'block';
+                if (statsContainer) statsContainer.style.display = 'block';
+            }, 2000);
+        }
+
+        function calculateRecommendations() {
+            const userSkills = appState.formData.skills.map(s => s.toLowerCase());
+            const userInterests = appState.formData.interests.map(i => i.toLowerCase());
+            const userLocation = appState.formData.location.toLowerCase();
+            const userWorkMode = appState.formData.workMode.toLowerCase();
+            
+            // Calculate scores for each internship
+            const scoredInternships = internshipsData.map(internship => {
+                let score = 0;
+                let matchedSkills = 0;
+                let matchedInterests = 0;
+                
+                // Skill matching (high weight)
+                internship.skills.forEach(skill => {
+                    if (userSkills.some(userSkill => skill.includes(userSkill) || userSkill.includes(skill))) {
+                        score += 4;
+                        matchedSkills++;
+                    }
+                });
+                
+                // Interest matching (medium weight)
+                internship.sectors.forEach(sector => {
+                    if (userInterests.some(interest => sector.includes(interest) || interest.includes(sector))) {
+                        score += 3;
+                        matchedInterests++;
+                    }
+                });
+                
+                // Location matching (medium weight)
+                if (userLocation && (internship.location.toLowerCase().includes(userLocation) || userLocation === 'remote')) {
+                    score += 3;
+                }
+                
+                // Work mode matching (low weight)
+                if (userWorkMode && internship.workMode.toLowerCase().includes(userWorkMode)) {
+                    score += 2;
+                }
+                
+                // Boost for featured and trending
+                if (internship.featured) score += 2;
+                if (internship.trending) score += 1;
+                if (internship.urgency === 'High') score += 1.5;
+                
+                // Rating boost
+                score += internship.rating;
+                
+                // Add some randomness for variety
+                score += Math.random() * 0.5;
+                
+                return {
+                    ...internship,
+                    score,
+                    matchedSkills,
+                    matchedInterests
+                };
+            });
+            
+            // Sort by score and return top 4
+            return scoredInternships
+                .sort((a, b) => b.score - a.score)
+                .slice(0, 4);
+        }
+
+        function displayRecommendations(recommendations) {
+            const container = document.getElementById('recommendationsList');
+            if (!container) return;
+            
+            appState.recommendations = recommendations;
+            
+            container.innerHTML = recommendations.map(internship => `
+                <div class="internship-card">
+                    <div class="internship-header">
+                        <div class="internship-info">
+                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                                <div style="font-size: 28px;">${internship.companyLogo}</div>
+                                <div>
+                                    <h4 class="internship-title">${internship.title}</h4>
+                                    <p class="internship-company">${internship.company}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="internship-badges">
+                                ${internship.featured ? '<span class="badge badge-featured">Featured</span>' : ''}
+                                ${internship.trending ? '<span class="badge badge-trending">Trending</span>' : ''}
+                                ${internship.urgency === 'High' ? '<span class="badge badge-urgent">Urgent Hiring</span>' : ''}
+                            </div>
+                            
+                            <div class="internship-meta">
+                                <span>📍 ${internship.location} • ${internship.workMode}</span>
+                                <span>⏰ ${internship.duration}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="internship-salary">
+                            <div class="salary-amount">${internship.stipend}</div>
+                            <div class="internship-rating">
+                                <span>⭐</span>
+                                <span>${internship.rating} • ${internship.applicants} applicants</span>
+                            </div>
+                            <div style="margin-top: 8px;">
+                                <span onclick="toggleFavorite(${internship.id})" style="cursor: pointer; font-size: 20px; color: ${appState.favorites.includes(internship.id) ? '#ef4444' : '#d1d5db'};">
+                                    ${appState.favorites.includes(internship.id) ? '❤️' : '🤍'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    ${(internship.matchedSkills > 0 || internship.matchedInterests > 0) ? `
+                        <div class="match-score">
+                            <div class="match-score-header">
+                                <span class="match-score-label">Match Score:</span>
+                                <div class="match-badges">
+                                    ${internship.matchedSkills > 0 ? `<span class="match-badge match-badge-skills">${internship.matchedSkills} Skills</span>` : ''}
+                                    ${internship.matchedInterests > 0 ? `<span class="match-badge match-badge-interests">${internship.matchedInterests} Interest</span>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    ` : ''}
+                    
+                    <div class="internship-description">
+                        ${internship.description}
+                    </div>
+                    
+                    <div class="internship-benefits">
+                        <div class="section-title">Benefits:</div>
+                        <div class="benefits-list">
+                            ${internship.benefits.map(benefit => `<span class="benefit-tag">${benefit}</span>`).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="internship-requirements">
+                        <div class="section-title">Requirements:</div>
+                        <div class="requirements-text">${internship.requirements}</div>
+                    </div>
+                    
+                    <div class="internship-actions">
+                        <div class="action-links">
+                            <a class="action-link" onclick="contactEmployer(${internship.id})">
+                                📞 Contact
+                            </a>
+                            <a class="action-link" onclick="shareInternship(${internship.id})">
+                                🔗 Share
+                            </a>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button class="btn-secondary" onclick="viewDetails(${internship.id})">View Details</button>
+                            <button class="btn-primary" onclick="applyNow(${internship.id})">Apply Now</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function displayStats(recommendations) {
+            const matchesFound = document.getElementById('matchesFound');
+            const avgRating = document.getElementById('avgRating');
+            const premiumCount = document.getElementById('premiumCount');
+            
+            if (matchesFound) matchesFound.textContent = recommendations.length;
+            
+            if (avgRating) {
+                const totalRating = recommendations.reduce((sum, r) => sum + r.rating, 0);
+                avgRating.textContent = (totalRating / recommendations.length).toFixed(1);
+            }
+            
+            if (premiumCount) {
+                const premium = recommendations.filter(r => r.featured || r.trending).length;
+                premiumCount.textContent = premium;
+            }
+        }
+
+        // Interaction functions
+        function toggleFavorite(internshipId) {
+            const index = appState.favorites.indexOf(internshipId);
+            if (index > -1) {
+                appState.favorites.splice(index, 1);
+            } else {
+                appState.favorites.push(internshipId);
+            }
+            
+            // Update display
+            if (appState.recommendations.length > 0) {
+                displayRecommendations(appState.recommendations);
+            }
+        }
+
+        function toggleFilters() {
+            alert('Filter functionality would be implemented here');
+        }
+
+        function contactEmployer(internshipId) {
+            const internship = internshipsData.find(i => i.id === internshipId);
+            if (internship) {
+                alert(`Contact: ${internship.company}\nEmail: hr@${internship.company.toLowerCase().replace(/\s+/g, '')}.com`);
+            }
+        }
+
+        function shareInternship(internshipId) {
+            const internship = internshipsData.find(i => i.id === internshipId);
+            if (internship) {
+                if (navigator.share) {
+                    navigator.share({
+                        title: internship.title,
+                        text: `Check out this internship: ${internship.title} at ${internship.company}`,
+                        url: window.location.href
+                    });
+                } else {
+                    // Fallback for browsers that don't support Web Share API
+                    const shareText = `Check out this internship: ${internship.title} at ${internship.company}\n${window.location.href}`;
+                    navigator.clipboard.writeText(shareText).then(() => {
+                        alert('Link copied to clipboard!');
+                    });
+                }
+            }
+        }
+
+        function viewDetails(internshipId) {
+            const internship = internshipsData.find(i => i.id === internshipId);
+            if (internship) {
+                alert(`Detailed view for: ${internship.title}\n\nThis would open a detailed modal or new page with complete internship information, application process, company details, etc.`);
+            }
+        }
+
+        function applyNow(internshipId) {
+            const internship = internshipsData.find(i => i.id === internshipId);
+            if (internship) {
+                alert(`Applying for: ${internship.title}\n\nThis would redirect to the application form or external portal for this internship.`);
+            }
+        }
+
+        function restartProcess() {
+            // Reset application state
+            appState.currentStep = 1;
+            appState.formData = {
+                education: '',
+                experience: '',
+                skills: [],
+                interests: [],
+                rolePreference: '',
+                location: '',
+                workMode: '',
+                duration: '',
+                stipendRange: '',
+                additionalSkills: ''
+            };
+            appState.recommendations = [];
+            appState.favorites = [];
+            
+            // Reset UI
+            updateStepDisplay();
+            updateNavigation();
+            
+            // Clear all selections
+            document.querySelectorAll('.option-card.selected').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Clear form inputs
+            const additionalSkills = document.getElementById('additionalSkills');
+            const stipendRange = document.getElementById('stipendRange');
+            
+            if (additionalSkills) additionalSkills.value = '';
+            if (stipendRange) stipendRange.value = '';
+        }
+
+        // Initialize the application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    </script>
+</body>
+</html>
