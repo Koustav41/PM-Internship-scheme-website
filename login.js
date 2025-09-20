@@ -1,11 +1,25 @@
-const container = document.querySelector('.container');
-const LoginLink = document.querySelector('.SignInLink');
-const RegisterLink = document.querySelector('.SignUpLink');
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('loginForm');
+    if (!form) return;
 
-RegisterLink.addEventListener('click', () =>{
-    container.classList.add('active');
-})
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
 
-LoginLink.addEventListener('click', () => {
-    container.classList.remove('active');
-})
+        if (!email || !password) {
+            alert('Please fill all fields.');
+            return;
+        }
+
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
+        const user = users.find(u => u.email === email && u.password === password);
+
+        if (user) {
+            alert('Login successful!');
+            window.location.href = 'index.html';
+        } else {
+            alert('Invalid email or password.');
+        }
+    });
+});
