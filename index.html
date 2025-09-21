@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>PM Internship Scheme 2025</title>
 <link rel="stylesheet" href="style.css">
 <meta name="description" content="AI-Powered Internship Recommendation Engine for PM Internship Scheme" />
 <meta name="keywords" content="Internship, PM Internship Scheme, AI, Recommendation Engine, Education, Skills, Opportunities" />
-
 </head>
 <body>
+  <script>
+  if (!localStorage.getItem('loggedInUser')) {
+    window.location.href = 'login.html';
+  }
+</script>
 <header>
   <div>
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:40px;height:40px;stroke-width:2;stroke:#2256f4;">
@@ -26,26 +31,23 @@
     <button class="lang-btn active" id="lang-en">English</button>
     <button class="lang-btn" id="lang-hi">हिंदी</button>
   </div>
-  <a href="login.html"><button class="btn-secondary" id="LoginBtn" aria-labelledby="LoginBtn intro-heading">Login</button></a>
+<button class="btn-secondary" id="logoutBtn" style="margin-left: 10px;">Logout</button>
 </header>
 <main>
   <div class="flex justify-center gap-60 items-center flex-col text-center">
 <section class="intro">
-    <br>
     <h2 id="intro-heading"></h2>
-    <p id="intro-desc"></p>
-    <a href="internship.html"><button class="btn-secondary" id="startBtn" aria-labelledby="startBtn intro-heading">Start Finding</button></a>
-<section class="learn-more">
-  <a href="https://pminternshipscheme.com"><button class="btn-secondary" id="learnMoreBtn" aria-labelledby="learnMoreBtn intro-heading">
-      Learn More</button></a></section>
-      
-    <a href="https://pminternship.mca.gov.in/login/"><button class="btn-secondary" id="viewInternshipsBtn" aria-labelledby="viewInternshipsBtn intro-heading">
+  <p id="intro-desc"></p>
+  <path stroke-width="1.75" d="M17 21v-2a4 4 0 00-3-3.87M9 21v-2a4 4 0 013-3.87M15 7a4 4 0 11-6 0 4 4 0 016 0z"><a href="https://pminternshipscheme.com"><button class="btn-secondary" id="learnMoreBtn" aria-labelledby="learnMoreBtn intro-heading">
+      Learn More</button></a></path>
+  <a href="https://pminternship.mca.gov.in/login/"><button class="btn-secondary" id="viewInternshipsBtn" aria-labelledby="viewInternshipsBtn intro-heading">
       View Official Portal</button></a>
     <a href="https://youtu.be/EFpfv__ynyc?si=g8DQW50_rD7DqvVY"><button class="btn-secondary" id="watchVideoBtn" aria-labelledby="watchVideoBtn intro-heading">
       Watch Video</button></a>
     </button>
   </section>
-  </div>
+  </div></main>
+
 
 
   <section class="feature-list" aria-label="Features">
@@ -138,6 +140,15 @@
   </section>
 </main>
 <script src="script.js"></script>
+<script>
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', function () {
+      localStorage.removeItem('loggedInUser');
+      window.location.href = 'login.html';
+    });
+  }
+</script>
 <footer>
   <p>&copy; 2025 PM Internship Scheme. All rights reserved.</p>
 </body>

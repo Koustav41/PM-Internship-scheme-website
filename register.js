@@ -18,7 +18,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         users.push({ name, email, password });
         localStorage.setItem('users', JSON.stringify(users));
-        alert('Signup successful! Please login.');
-        window.location.href = 'login.html';
+        // On successful registration
+        alert('Signup successful! You are now logged in.');
+        localStorage.setItem('loggedInUser', email);
+        window.location.href = 'index.html';
     });
 });

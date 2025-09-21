@@ -16,7 +16,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const user = users.find(u => u.email === email && u.password === password);
 
         if (user) {
-            alert('Login successful!');
+            // On successful login
+            localStorage.setItem('loggedInUser', email);
             window.location.href = 'index.html';
         } else {
             alert('Invalid email or password.');

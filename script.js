@@ -97,8 +97,17 @@ function switchLanguage(lang) {
   }
 }
 
-langEN.addEventListener('click', () => switchLanguage('en'));
-langHI.addEventListener('click', () => switchLanguage('hi'));
+langEN.addEventListener('click', () => {
+  langEN.classList.add('active');
+  langHI.classList.remove('active');
+  switchLanguage('en');
+});
+
+langHI.addEventListener('click', () => {
+  langHI.classList.add('active');
+  langEN.classList.remove('active');
+  switchLanguage('hi');
+});
 
 switchLanguage('en');
 
