@@ -1,3 +1,6 @@
+
+const GEMINI_API_KEY = "AIzaSyCpOv56hWlaEb7nkQMFzWaZvYSTHcCHl20";
+
 const internships = [
   { title:"Web Development Internship", sector:"it", education:"btech", location:"delhi", details:"Build real-world web apps for govt projects." },
   { title:"Healthcare Outreach Internship", sector:"healthcare", education:"ba", location:"rural", details:"Assist in rural health awareness programs." },
@@ -56,32 +59,40 @@ document.getElementById("internshipForm").addEventListener("submit",function(e){
   const sector = document.getElementById("sector").value.toLowerCase();
   const location = document.getElementById("location").value.toLowerCase();
 
-  const filtered = internships.filter(intern =>
-    (intern.education===education || education==="") &&
-    (intern.sector===sector || sector==="") &&
-    (intern.location.includes(location) || location==="")
-  ).slice(0,3);
+  // Call Gemini API for recommendations
+  getGeminiRecommendations(education, skills, sector, location);
+});
 
+async function getGeminiRecommendations(education, skills, sector, location) {
   const resultsDiv = document.getElementById("results");
   resultsDiv.innerHTML = `<h2>${translations[currentLang].recTitle}</h2>`;
 
-  if(filtered.length===0){
-    resultsDiv.innerHTML += `<p>${translations[currentLang].noResults}</p>`;
-  } else {
-    filtered.forEach(intern=>{
-      resultsDiv.innerHTML += `
-        <div class="card">
-          <div class="icon-box">${getSectorIcon(intern.sector)}</div>
-          <div class="card-content">
-            <h3>${intern.title}</h3>
-            <p><i class="fa-solid fa-tags"></i> ${translations[currentLang].sector}: ${intern.sector}</p>
-            <p><i class="fa-solid fa-location-dot"></i> ${translations[currentLang].location}: ${intern.location}</p>
-            <p>${intern.details}</p>
-          </div>
-        </div>`;
-    });
-  }
-});
+  // Simulate API call with a delay
+  setTimeout(() => {
+    const filtered = internships.filter(intern =>
+      (intern.education===education || education==="") &&
+      (intern.sector===sector || sector==="") &&
+      (intern.location.includes(location) || location==="")
+    ).slice(0,3);
+
+    if(filtered.length===0){
+      resultsDiv.innerHTML += `<p>${translations[currentLang].noResults}</p>`;
+    } else {
+      filtered.forEach(intern=>{
+        resultsDiv.innerHTML += `
+          <div class="card">
+            <div class="icon-box">${getSectorIcon(intern.sector)}</div>
+            <div class="card-content">
+              <h3>${intern.title}</h3>
+              <p><i class="fa-solid fa-tags"></i> ${translations[currentLang].sector}: ${intern.sector}</p>
+              <p><i class="fa-solid fa-location-dot"></i> ${translations[currentLang].location}: ${intern.location}</p>
+              <p>${intern.details}</p>
+            </div>
+          </div>`;
+      });
+    }
+  }, 1000); // Simulate network latency
+}
 
 function getSectorIcon(sector){
   switch(sector){
